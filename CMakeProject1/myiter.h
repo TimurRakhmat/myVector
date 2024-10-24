@@ -1,13 +1,15 @@
 #pragma once
+template<class ValueType>
+class MyVector;
 
-template<typename ValueType>
+template<class ValueType>
 class MyIter
 {
-    friend class MyVector;
-private:
+    friend class MyVector<ValueType>;
+public:
     MyIter(ValueType* p);
 public:
-    explicit MyIter(const MyIter& it);
+    MyIter(const MyIter& it);
 
     bool operator!=(MyIter const& other) const;
     ValueType& operator*() const;
@@ -15,55 +17,62 @@ public:
     MyIter& operator--();
 
     MyIter operator+(int) const;
+    int operator-(const MyIter& itr) const;
     MyIter& operator+=(int);
 private:
     ValueType* p;
 };
 
-template <typename ValueType>
+template <class ValueType>
 MyIter<ValueType>::MyIter(ValueType* p) : p(p)
 {
 }
 
-template <typename ValueType>
+template <class ValueType>
 MyIter<ValueType>::MyIter(const MyIter& it) : p(it.p)
 {
 }
 
-template <typename ValueType>
+template <class ValueType>
 bool MyIter<ValueType>::operator!=(MyIter const& other) const
 {
     return p != other.p;
 }
 
-template <typename ValueType>
+template <class ValueType>
 ValueType& MyIter<ValueType>::operator*() const
 {
 
     return *p;
 }
 
-template <typename ValueType>
+template <class ValueType>
 MyIter<ValueType>& MyIter<ValueType>::operator++()
 {
     ++p;
     return *this;
 }
 
-template <typename ValueType>
+template <class ValueType>
 MyIter<ValueType>& MyIter<ValueType>::operator--()
 {
     --p;
     return *this;
 }
 
-template<typename ValueType>
+template<class ValueType>
 inline MyIter<ValueType> MyIter<ValueType>::operator+(int count) const
 {
     return MyIter(p + count);
 }
 
-template<typename ValueType>
+template<class ValueType>
+inline int MyIter<ValueType>::operator-(const MyIter& itr) const
+{
+    return p - itr.p;
+}
+
+template<class ValueType>
 MyIter<ValueType>& MyIter<ValueType>::operator+=(int count)
 {
     p =p + count;

@@ -8,8 +8,9 @@
 
 using namespace std;
 
+template<class T>
+void printMyVec(const MyVector<T>& v) {
 
-void printMyVec(const MyVector& v) {
 	for (int i = 0; i < v.size(); i++) {
 		cout << v[i] << " ";
 	}
@@ -18,27 +19,41 @@ void printMyVec(const MyVector& v) {
 
 int main()
 {
-	int n = 200;
-	/*MyVector v;
+	int n = 64;
+	MyVector<char> v;
 	for (int i = 0; i < n; i++) {
-		v.push_back(i);
+		v.push_back('a' + i);
 		if (v.size() == v.capacity())
 			cout << v[i] << " _ " << v.size() << " _ " << v.capacity() << "\n";
 	}
 
+
+
+	for (int i = 0; i < (n >> 1); i ++) {
+		v.erase(v.begin() + i);
+	}
 	printMyVec(v);
 
 	auto b = v.begin() + 1;
 	b += 3;
 	auto d = v.end();
-	cout << *b;*/
+	cout << *b;
 
-	vector<int> v;
-	for (int i = 0; i < n; i++) {
-		v.push_back(i);
-		if (v.size() == v.capacity())
-			cout << v[i] << " _ " << v.size() << " _ " << v.capacity() << "\n";
+
+	/*char* r = "asdfghjkl";
+	long long* t = new long long[10];
+
+
+	for (int i = 0; i < 10; i++) {
+		t[i] = i;
 	}
+
+	MyIter<char> g(r);
+
+	MyIter<long long> gg(t);
+	cout << *(g + 2) << endl;
+	
+	cout << *(gg + 2);*/
 
 	return 0;
 }
