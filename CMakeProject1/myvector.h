@@ -3,6 +3,7 @@
 #include <memory>
 #include "myiter.h"
 #include <cassert>
+#include <mutex>
 
 template<class T>
 class MyVector
@@ -11,6 +12,7 @@ private:
     unsigned _size = 0;
     unsigned _capacity = 0;
     std::unique_ptr<T[]> _data;
+    std::mutex _data_mutex;
 
 public:
     typedef MyIter<T> iterator;
@@ -20,6 +22,9 @@ public:
     MyVector();
     ~MyVector();
     MyVector& operator=(const MyVector& vec);
+    MyVector(MyVector&& vec);
+    MyVector& operator=(MyVector&& vec);
+
 
     // Element access
     T& at(unsigned int pos);
@@ -60,6 +65,7 @@ MyVector<T>::~MyVector()
 template<class T>
 MyVector<T>& MyVector<T>::operator=(const MyVector& vec)
 {
+    const std::lock_guard<std::mutex> lock(_data_mutex);
     _size = vec._size;
     _capacity = vec._capacity;
     _data = std::make_unique<int[]>(_capacity);
@@ -71,8 +77,21 @@ MyVector<T>& MyVector<T>::operator=(const MyVector& vec)
 }
 
 template<class T>
+inline MyVector<T>::MyVector(MyVector&& vec)
+{
+}
+
+template<class T>
+inline MyVector<T>& MyVector<T>::operator=(MyVector&& vec)
+{
+    return *this;
+    // TODO: вставьте здесь оператор return
+}
+
+template<class T>
 T& MyVector<T>::at(unsigned int pos)
 {
+    const std::lock_guard<std::mutex> lock(_data_mutex);
     assert(pos < _size);
     return *(_data.get() + pos);
 }
@@ -80,6 +99,7 @@ T& MyVector<T>::at(unsigned int pos)
 template<class T>
 T& MyVector<T>::operator[](unsigned int pos)
 {
+    const std::lock_guard<std::mutex> lock(_data_mutex);
     return *(_data.get() + pos);
 }
 
@@ -91,18 +111,21 @@ T& MyVector<T>::operator[](unsigned int pos) const
 template<class T>
 T& MyVector<T>::front()
 {
+    const std::lock_guard<std::mutex> lock(_data_mutex);
     return *(_data.get());
 }
 
 template<class T>
 T& MyVector<T>::back()
 {
+    const std::lock_guard<std::mutex> lock(_data_mutex);
     return _data.get()[_size];
 }
 
 template<class T>
 T* MyVector<T>::data()
 {
+    const std::lock_guard<std::mutex> lock(_data_mutex);
     return _data.get();
 }
 
@@ -157,6 +180,7 @@ unsigned MyVector<T>::capacity() const
 template<class T>
 MyVector<T>::iterator MyVector<T>::erase(iterator itr)
 {
+    const std::lock_guard<std::mutex> lock(_data_mutex);
     int index = itr - begin();
     assert(0 < index < _size);
 
@@ -174,6 +198,7 @@ MyVector<T>::iterator MyVector<T>::erase(iterator itr)
 template<class T>
 void MyVector<T>::push_back(const T& value)
 {
+    const std::lock_guard<std::mutex> lock(_data_mutex);
     if (_size == _capacity) {
         unsigned old_cap = _capacity;
         if (_capacity != 0)

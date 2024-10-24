@@ -1,6 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
+#include <thread>
 
 #include "myvector.h"
 #include "myiter.h"
@@ -20,14 +21,12 @@ void printMyVec(const MyVector<T>& v) {
 int main()
 {
 	int n = 64;
-	MyVector<char> v;
+	MyVector<string> v;
 	for (int i = 0; i < n; i++) {
-		v.push_back('a' + i);
+		v.push_back("abc" + to_string(i));
 		if (v.size() == v.capacity())
 			cout << v[i] << " _ " << v.size() << " _ " << v.capacity() << "\n";
 	}
-
-
 
 	for (int i = 0; i < (n >> 1); i ++) {
 		v.erase(v.begin() + i);
